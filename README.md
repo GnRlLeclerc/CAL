@@ -1,7 +1,25 @@
-# Tauri + SvelteKit + TypeScript
+# CAL (Configurable App Launcher)
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+A configurable app launcher for Linux, inspired by [Rofi](https://github.com/davatorium/rofi).
 
-## Recommended IDE Setup
+Built with [Tauri](https://v2.tauri.app) and [Svelte](https://svelte.dev/).
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+Run the app in dev mode:
+
+```bash
+bun tauri dev
+```
+
+Build the app:
+
+```bash
+bun tauri build
+```
+
+## Todolist
+
+- [ ] TOML layout configuration
+- [ ] Custom CSS + integration with Base16 themes
+- [ ] Run a daemon in the background for fast startup
+- [ ] In app launcher mode, store the choice counts for every option. Use it to rank them
+- [ ] Integrate other toml configurations to be used as a choice menu for anything
