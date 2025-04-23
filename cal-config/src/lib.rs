@@ -1,5 +1,6 @@
 //! Configurable App Launcher entries
 
+pub mod cli;
 pub mod config;
 pub mod entries;
 

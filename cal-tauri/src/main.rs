@@ -1,27 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use clap::Parser;
-
-/// Configurable App Launcher
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    /// Choices for the launcher (path to a file). Defaults to standard app launcher
-    #[arg(short, long)]
-    choices: Option<String>,
-
-    /// Run a daemon in the background to make subsequent launches faster
-    #[arg(short, long, default_value_t = false)]
-    daemon: bool,
-}
+use cal_config::cli::process_cli_config;
 
 fn main() {
-    let args = Args::parse();
+    let config = process_cli_config();
 
-    if args.daemon {
-        todo!("Daemon mode is not implemented yet");
-    }
+    // TODO: process the config, send it to the frontend...
 
     launcher_lib::run()
 }
