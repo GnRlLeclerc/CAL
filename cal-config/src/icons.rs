@@ -118,7 +118,7 @@ fn insert_icons_with_weight(
                         icon_paths
                             .entry(icon.to_string())
                             .and_modify(|v| {
-                                if v.0 < weight || (v.1 && !is_fallback) {
+                                if (v.0 < weight && is_fallback <= v.1) || (v.1 > is_fallback) {
                                     v.0 = weight;
                                     v.1 = is_fallback;
                                     v.2 = entry.path().to_string_lossy().to_string();
