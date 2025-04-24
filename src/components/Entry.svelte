@@ -16,6 +16,8 @@
     switch (mode) {
       case "compact":
         return "icon-compact";
+      case "full":
+        return "icon-full";
       default:
         return "icon";
     }
@@ -25,8 +27,21 @@
     switch (mode) {
       case "compact":
         return "radius-compact";
+      case "full":
+        return "radius-full";
       default:
         return "radius-compact";
+    }
+  });
+
+  const heightcls = $derived.by(() => {
+    switch (mode) {
+      case "compact":
+        return "height-compact";
+      case "full":
+        return "height-full";
+      default:
+        return "height-compact";
     }
   });
 
@@ -38,11 +53,11 @@
   };
 </script>
 
-<button class={["entry-row", radiuscls]} {onclick}>
+<button class={["entry-row", radiuscls, heightcls]} {onclick}>
   <Image classes={iconcls} path={entry.icon}></Image>
 
   {#if mode !== "icon"}
-    <div class="entry-content">
+    <div class={["entry-content", heightcls]}>
       <p class="name">{entry.name}</p>
 
       {#if mode !== "compact" && mode !== "lines"}

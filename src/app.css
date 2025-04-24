@@ -18,10 +18,16 @@
 
   /** Icon sizes for the different modes */
   --compact-size: 28px;
+  --full-size: 48px;
   --large-size: 100px;
 
   /** Border radiuses for the different modes */
   --compact-radius: 10px;
+  --full-radius: 15px;
+
+  /** Entry heights for the different modes */
+  --compact-height: 50px;
+  --height-full: 80px;
 
   background-color: var(--background-color);
 }
@@ -81,6 +87,11 @@ input:focus {
   outline: none;
 }
 
+p {
+  text-align: left;
+  margin: 0;
+}
+
 .separator {
   background-color: var(--background-hover-color);
   height: 1px;
@@ -115,12 +126,25 @@ input:focus {
 .entry-content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 /** Border radiuses for the different modes */
 .radius-compact {
   border-radius: var(--compact-radius);
+}
+
+.radius-full {
+  border-radius: var(--full-radius);
+}
+
+/** Height classes for the different modes */
+.height-compact {
+  height: var(--compact-height);
+}
+
+.height-full {
+  height: var(--height-full);
 }
 
 /** App icons */
@@ -138,6 +162,11 @@ input:focus {
 .icon-compact {
   height: var(--compact-size);
   width: var(--compact-size);
+}
+
+.icon-full {
+  height: var(--full-size);
+  width: var(--full-size);
 }
 
 /** Placeholder for missing icons */
