@@ -2,6 +2,8 @@
   import { appState } from "$lib/config.svelte";
   import { normalize, filterEntry } from "$lib/utils";
   import { subscribeConfig } from "$lib/load";
+  import "../app.css";
+  import Entry from "../components/Entry.svelte";
 
   subscribeConfig();
 
@@ -17,8 +19,8 @@
   {:else}
     {#each appState.config.entries
       .filter((entry) => filterEntry(entry, keywords))
-      .slice(0, 5) as entry}
-      <p>{entry.name}: {entry.description}: {entry.icon}</p>
+      .slice(0, 15) as entry (entry.name)}
+      <Entry {entry}></Entry>
     {/each}
   {/if}
 </main>

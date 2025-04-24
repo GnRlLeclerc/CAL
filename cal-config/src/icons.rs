@@ -10,32 +10,50 @@ use std::{
 use walkdir::WalkDir;
 
 /// Index desktop icons paths by name
-pub fn load_icons() -> HashMap<String, String> {
+pub fn load_icons(theme: Option<String>) -> HashMap<String, String> {
     // NOTE: icon paths contain their resolution in their values.
     // SVGs have the maximum resolution possible.
-    let mut icon_paths: HashMap<String, (usize, String)> = HashMap::new();
+    // The tuples represent (resolution, is_fallback, path)
+    let mut icon_paths: HashMap<String, (usize, bool, String)> = HashMap::new();
 
     let xdg_data_dirs = env::var("XDG_DATA_DIRS");
     match xdg_data_dirs {
         Ok(value) => {
             for dir in value.split(':') {
+                if let Some(theme) = &theme {
+                    let mut base_path = PathBuf::from(dir);
+                    base_path.push("icons");
+                    base_path.push(theme);
+                    process_icons_dir(&base_path, false, &mut icon_paths);
+                }
+
                 let mut path = PathBuf::from(dir);
                 path.push("icons/hicolor");
-                process_icons_dir(&path, &mut icon_paths);
+                process_icons_dir(&path, true, &mut icon_paths);
             }
         }
         Err(_) => {
-            let base_path = "/usr/share/icons/hicolor";
-            eprintln!("$XDG_DATA_DIRS not set, defaulting to {}", base_path);
-            let path = Path::new(base_path);
-            process_icons_dir(&path, &mut icon_paths);
+            eprintln!("$XDG_DATA_DIRS not set, defaulting to /usr/share/icons");
+
+            if let Some(theme) = theme {
+                let mut base_path = PathBuf::from("/usr/share/icons");
+                base_path.push(theme);
+                process_icons_dir(&base_path, false, &mut icon_paths);
+            }
+
+            let base_path = Path::new("/usr/share/icons/hicolor");
+            process_icons_dir(&base_path, true, &mut icon_paths);
         }
     }
 
-    icon_paths.into_iter().map(|(k, v)| (k, v.1)).collect()
+    icon_paths.into_iter().map(|(k, v)| (k, v.2)).collect()
 }
 
-fn process_icons_dir(path: &Path, mut icon_paths: &mut HashMap<String, (usize, String)>) {
+fn process_icons_dir(
+    path: &Path,
+    is_fallback: bool,
+    mut icon_paths: &mut HashMap<String, (usize, bool, String)>,
+) {
     if path.exists() {
         match path.read_dir() {
             Ok(entries) => entries
@@ -53,7 +71,12 @@ fn process_icons_dir(path: &Path, mut icon_paths: &mut HashMap<String, (usize, S
                     match last_dir {
                         "symbolic" => return,
                         "scalable" => {
-                            insert_icons_with_weight(&path, usize::MAX, &mut icon_paths);
+                            insert_icons_with_weight(
+                                &path,
+                                usize::MAX,
+                                is_fallback,
+                                &mut icon_paths,
+                            );
                         }
                         _ => {
                             let resolution = last_dir
@@ -61,7 +84,12 @@ fn process_icons_dir(path: &Path, mut icon_paths: &mut HashMap<String, (usize, S
                                 .next()
                                 .and_then(|s| s.parse::<usize>().ok())
                                 .unwrap_or(0);
-                            insert_icons_with_weight(&path, resolution, &mut icon_paths);
+                            insert_icons_with_weight(
+                                &path,
+                                resolution,
+                                is_fallback,
+                                &mut icon_paths,
+                            );
                         }
                     }
                 }),
@@ -78,7 +106,8 @@ fn process_icons_dir(path: &Path, mut icon_paths: &mut HashMap<String, (usize, S
 fn insert_icons_with_weight(
     path: &Path,
     weight: usize,
-    icon_paths: &mut HashMap<String, (usize, String)>,
+    is_fallback: bool,
+    icon_paths: &mut HashMap<String, (usize, bool, String)>,
 ) {
     for entry in WalkDir::new(path) {
         match entry {
@@ -89,12 +118,17 @@ fn insert_icons_with_weight(
                         icon_paths
                             .entry(icon.to_string())
                             .and_modify(|v| {
-                                if v.0 < weight {
+                                if v.0 < weight || (v.1 && !is_fallback) {
                                     v.0 = weight;
-                                    v.1 = entry.path().to_string_lossy().to_string();
+                                    v.1 = is_fallback;
+                                    v.2 = entry.path().to_string_lossy().to_string();
                                 }
                             })
-                            .or_insert((weight, entry.path().to_string_lossy().to_string()));
+                            .or_insert((
+                                weight,
+                                is_fallback,
+                                entry.path().to_string_lossy().to_string(),
+                            ));
                     }
                 }
             }

@@ -26,7 +26,8 @@ pub fn from_csv() -> Vec<Entry> {
 
 /// Parse CAL entries from Freedesktop ones
 pub fn from_freedesktop() -> Vec<Entry> {
-    let icons = load_icons();
+    // TODO: load the theme from config
+    let icons = load_icons(Some("Papirus".into()));
 
     freedesktop_entries()
         .into_iter()

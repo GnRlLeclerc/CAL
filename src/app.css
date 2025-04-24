@@ -1,0 +1,32 @@
+:root {
+  --icon-size: 100px;
+}
+
+/** App icons */
+.icon {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  object-fit: contain;
+}
+
+/** Placeholder for missing icons */
+.default-icon {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  background-color: red; /** TODO */
+  border-radius: 25%;
+}
+
+/** An Entry row (image + title + description) */
+.entry-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/** The Entry content (title + description) column */
+.entry-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
