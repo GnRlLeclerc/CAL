@@ -19,8 +19,12 @@ export const subscribeConfig = async () => {
       }
     }
 
-    // TODO: load from toml config
-    config.mode = "compact";
+    if (config.mode === "icon") {
+      // Resize the window to go into row mode
+      getCurrentWindow().setSize(new LogicalSize(600, 200));
+    } else {
+      getCurrentWindow().setSize(new LogicalSize(600, 400));
+    }
 
     // Update the config
     appState.config = config;
