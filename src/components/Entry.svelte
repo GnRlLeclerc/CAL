@@ -40,6 +40,8 @@
         return "height-compact";
       case "full":
         return "height-full";
+      case "lines":
+        return "height-lines";
       default:
         return "height-compact";
     }
@@ -54,7 +56,9 @@
 </script>
 
 <button class={["entry-row", radiuscls, heightcls]} {onclick}>
-  <Image classes={iconcls} path={entry.icon}></Image>
+  {#if mode !== "lines"}
+    <Image classes={iconcls} path={entry.icon}></Image>
+  {/if}
 
   {#if mode !== "icon"}
     <div class={["entry-content", heightcls]}>

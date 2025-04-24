@@ -8,7 +8,6 @@
   --text-selected-color: #61afef;
   --text-dim-color: #5c6370;
   --accent-color: #61afef;
-  /* --accent-color: #3c4048; /** Set this to hover color for a flat style */
 
   /** Configurable variables */
   --padding: 10px;
@@ -24,10 +23,12 @@
   /** Border radiuses for the different modes */
   --compact-radius: 10px;
   --full-radius: 15px;
+  --lines-radius: 8px;
 
   /** Entry heights for the different modes */
   --compact-height: 50px;
   --height-full: 80px;
+  --height-lines: 30px;
 
   background-color: var(--background-color);
 }
@@ -138,6 +139,10 @@ p {
   border-radius: var(--full-radius);
 }
 
+.radius-lines {
+  border-radius: var(--lines-radius);
+}
+
 /** Height classes for the different modes */
 .height-compact {
   height: var(--compact-height);
@@ -145,6 +150,10 @@ p {
 
 .height-full {
   height: var(--height-full);
+}
+
+.height-lines {
+  height: var(--height-lines);
 }
 
 /** App icons */
