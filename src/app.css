@@ -18,7 +18,7 @@
   /** Icon sizes for the different modes */
   --compact-size: 28px;
   --full-size: 48px;
-  --large-size: 80px;
+  --large-size: 84px;
 
   /** Border radiuses for the different modes */
   --compact-radius: 10px;
@@ -210,7 +210,6 @@ p {
   display: flex;
   scrollbar-width: none; /* Firefox */
   overflow: scroll;
-  justify-content: space-evenly;
   align-items: center; /* Vertically center items when in row */
   width: 100%;
 }
