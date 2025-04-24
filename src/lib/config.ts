@@ -7,6 +7,7 @@ export interface Entry {
   icon: string | null;
   description: string | null;
   keywords: string[] | null;
+  terminal: boolean;
 
   // Utility (computed when fetched)
   allKeywords: string[];

@@ -17,6 +17,8 @@ pub struct Entry {
     pub description: Option<String>,
     /// Keywords for filtering
     pub keywords: Option<Vec<String>>,
+    /// Whether this entry should be executed within a new shell window
+    pub terminal: bool,
 }
 
 /// Parse CAL entries from CSV

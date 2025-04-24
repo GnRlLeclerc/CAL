@@ -13,6 +13,7 @@
   const onclick = () => {
     invoke("run_command", {
       command: entry.command,
+      terminal: entry.terminal,
     });
   };
 </script>

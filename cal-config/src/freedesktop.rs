@@ -197,6 +197,11 @@ impl FreedesktopParser {
                         }
                     }
                 }
+                "Terminal" => {
+                    if value == "true" {
+                        entry.terminal = true;
+                    }
+                }
                 _ => {}
             }
         }
