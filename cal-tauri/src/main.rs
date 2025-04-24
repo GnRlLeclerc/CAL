@@ -5,8 +5,5 @@ use cal_config::cli::process_cli_config;
 
 fn main() {
     let config = process_cli_config();
-
-    // TODO: process the config, send it to the frontend...
-
-    launcher_lib::run()
+    launcher_lib::run(config)
 }

@@ -1,11 +1,11 @@
 //! CAL config and how to parse it
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-use crate::Entry;
+use crate::{Entry, entries::from_freedesktop};
 
 /// The CAL config
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     /// The config entries
     pub entries: Vec<Entry>,
@@ -13,7 +13,9 @@ pub struct Config {
 
 impl Default for Config {
     fn default() -> Self {
-        Self { entries: vec![] }
+        Self {
+            entries: from_freedesktop(),
+        }
     }
 }
 

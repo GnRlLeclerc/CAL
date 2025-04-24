@@ -20,6 +20,6 @@ bun tauri build
 
 - [ ] TOML layout configuration
 - [ ] Custom CSS + integration with Base16 themes
-- [ ] Run a daemon in the background for fast startup
+- [ ] Run a daemon in the background for fast startup + an option to stop it
 - [ ] In app launcher mode, store the choice counts for every option. Use it to rank them
 - [ ] Integrate other toml configurations to be used as a choice menu for anything
