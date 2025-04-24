@@ -1,6 +1,7 @@
 //! Configurable App Launcher entries
 
 pub mod cli;
+pub mod colors;
 pub mod config;
 pub mod entries;
 mod freedesktop;
