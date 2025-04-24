@@ -19,6 +19,9 @@ export const subscribeConfig = async () => {
       }
     }
 
+    // TODO: load from toml config
+    config.mode = "compact";
+
     // Update the config
     appState.config = config;
 

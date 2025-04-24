@@ -13,7 +13,20 @@ export interface Entry {
   allKeywords: string[];
 }
 
+/** The launcher color scheme */
+export interface Colors {
+  background: string;
+  hover: string;
+  selected: string;
+  text: string;
+  textSelected: string;
+  textDim: string;
+}
+
 /** The launcher configuration for a given screen */
 export interface Config {
   entries: Entry[];
+
+  /** Styling */
+  mode: "full" | "icon" | "lines" | "compact";
 }

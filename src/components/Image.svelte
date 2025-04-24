@@ -4,9 +4,10 @@
 
   interface Props {
     path: string | null;
+    classes?: string;
   }
 
-  const { path }: Props = $props();
+  const { path, classes }: Props = $props();
   const filename =
     path !== null
       ? path.split("/").pop()!.split(".").slice(0, -1).join(".")
@@ -17,5 +18,10 @@
 {#if src === null}
   <div class="default-icon"></div>
 {:else}
-  <img {src} alt={`${filename} icon`} class="icon" draggable="false" />
+  <img
+    {src}
+    alt={`${filename} icon`}
+    class={["icon", classes]}
+    draggable="false"
+  />
 {/if}

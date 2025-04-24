@@ -1,30 +1,87 @@
 :root {
-  --icon-size: 100px;
+  /** Default color scheme (Atom One Dark) */
+  --background-color: #282c34;
+  --background-hover-color: #3c4048;
+  --background-selected-color: #3c4048;
+  --text-color: #abb2bf;
+  --text-hover-color: #61afef;
+  --text-selected-color: #61afef;
+  --text-dim-color: #5c6370;
+  --accent-color: #61afef;
+  /* --accent-color: #3c4048; /** Set this to hover color for a flat style */
+
+  /** Configurable variables */
+  --padding: 10px;
+  --animation-duration: 0.3s;
+  --animation-easing: ease-in-out;
+  --border-radius: 25px;
+
+  --compact-size: 28px;
+  --large-size: 100px;
+
+  background-color: var(--background-color);
 }
 
 /** Reset body properties */
 body {
   margin: 0;
+  height: 100%;
+  display: flex;
 }
 
 html {
   user-select: none;
   -webkit-user-select: none;
+  height: 100%;
 }
 
-/** App icons */
-.icon {
-  height: var(--icon-size);
-  width: var(--icon-size);
-  object-fit: contain;
+main {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding-right: var(--padding);
+  padding-left: var(--padding);
+  padding-top: 15px;
 }
 
-/** Placeholder for missing icons */
-.default-icon {
-  height: var(--icon-size);
-  width: var(--icon-size);
-  background-color: red; /** TODO */
-  border-radius: 25%;
+/** The input row (icon + text input) */
+.input-row {
+  display: flex;
+  flex-direction: row;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.search-icon {
+  height: 20px;
+  width: 20px;
+  margin-right: var(--padding);
+  margin-left: var(--padding);
+
+  /** SVG color */
+  color: var(--accent-color);
+}
+
+input {
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  width: 100%;
+}
+
+input::placeholder {
+  color: var(--text-dim-color);
+}
+
+input:focus {
+  outline: none;
+}
+
+.separator {
+  background-color: var(--background-hover-color);
+  height: 1px;
+  width: 100%;
+  margin: 10px 0;
 }
 
 /** An Entry row (image + title + description) */
@@ -33,20 +90,22 @@ html {
   flex-direction: row;
   align-items: center;
   width: 100%;
+  border-radius: var(--border-radius);
 
   /** Button style */
   border: none;
+  color: var(--text-color);
   background-color: transparent;
-  transition: background-color 0.15s ease-in-out;
+  transition: background-color var(--animation-duration) var(--animation-easing);
 }
 
 .entry-row:hover {
-  background-color: lightblue;
+  background-color: var(--background-hover-color);
   cursor: pointer;
 }
 
 .entry-row:active {
-  background-color: lightgreen;
+  background-color: var(--background-selected-color);
 }
 
 /** The Entry content (title + description) column */
@@ -54,4 +113,51 @@ html {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/** App icons */
+.icon {
+  object-fit: contain;
+  margin-right: var(--padding);
+}
+
+.icon-large {
+  height: var(--large-size);
+  width: var(--large-size);
+}
+
+/** Icon styles for compact mode */
+.icon-compact {
+  height: var(--compact-size);
+  width: var(--compact-size);
+}
+
+/** Placeholder for missing icons */
+.default-icon {
+  height: var(--large-size);
+  width: var(--large-size);
+  background-color: red; /** TODO */
+  border-radius: var(--border-radius);
+}
+
+/** The Entry title */
+.name {
+}
+
+/** The Entry description */
+.description {
+  color: var(--text-dim-color);
+}
+
+/** Flex scroll area without scrollbar */
+.scroll {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none; /* Firefox */
+  overflow-y: scroll;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

@@ -33,6 +33,8 @@ fn run_command(command: String, terminal: bool) {
         .args(command[1..].iter())
         .env("SHLVL", "0")
         .current_dir(home_dir)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .spawn();
 }
 
