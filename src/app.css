@@ -16,8 +16,12 @@
   --animation-easing: ease-in-out;
   --border-radius: 25px;
 
+  /** Icon sizes for the different modes */
   --compact-size: 28px;
   --large-size: 100px;
+
+  /** Border radiuses for the different modes */
+  --compact-radius: 10px;
 
   background-color: var(--background-color);
 }
@@ -90,7 +94,6 @@ input:focus {
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border-radius: var(--border-radius);
 
   /** Button style */
   border: none;
@@ -115,10 +118,15 @@ input:focus {
   justify-content: center;
 }
 
+/** Border radiuses for the different modes */
+.radius-compact {
+  border-radius: var(--compact-radius);
+}
+
 /** App icons */
 .icon {
   object-fit: contain;
-  margin-right: var(--padding);
+  margin: 0 var(--padding);
 }
 
 .icon-large {

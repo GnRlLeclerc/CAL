@@ -21,6 +21,15 @@
     }
   });
 
+  const radiuscls = $derived.by(() => {
+    switch (mode) {
+      case "compact":
+        return "radius-compact";
+      default:
+        return "radius-compact";
+    }
+  });
+
   const onclick = () => {
     invoke("run_command", {
       command: entry.command,
@@ -29,7 +38,7 @@
   };
 </script>
 
-<button class="entry-row" {onclick}>
+<button class={["entry-row", radiuscls]} {onclick}>
   <Image classes={iconcls} path={entry.icon}></Image>
 
   {#if mode !== "icon"}
