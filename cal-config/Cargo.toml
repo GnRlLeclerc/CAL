@@ -10,3 +10,4 @@ toml = "0.8.20"
 clap = { version = "4.5.37", features = ["derive"] }
 directories-next = "2.0.0"
 sys-locale = "0.3.2"
+walkdir = "2.5.0"

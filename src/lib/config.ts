@@ -4,7 +4,7 @@
 export interface Entry {
   name: string;
   command: string;
-  picture: string | null;
+  icon: string | null;
   description: string | null;
   keywords: string[] | null;
 

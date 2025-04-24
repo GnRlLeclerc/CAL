@@ -3,7 +3,8 @@
 pub mod cli;
 pub mod config;
 pub mod entries;
-pub mod freedesktop;
+mod freedesktop;
+mod icons;
 
 pub use config::Config;
 pub use entries::Entry;

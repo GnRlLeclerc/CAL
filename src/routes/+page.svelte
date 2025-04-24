@@ -18,7 +18,7 @@
     {#each appState.config.entries
       .filter((entry) => filterEntry(entry, keywords))
       .slice(0, 5) as entry}
-      <p>{entry.name}: {entry.description}: {entry.picture}</p>
+      <p>{entry.name}: {entry.description}: {entry.icon}</p>
     {/each}
   {/if}
 </main>

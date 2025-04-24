@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::freedesktop::freedesktop_entries;
+use crate::{freedesktop::freedesktop_entries, icons::load_icons};
 
 /// An entry in the app launcher
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -26,8 +26,14 @@ pub fn from_csv() -> Vec<Entry> {
 
 /// Parse CAL entries from Freedesktop ones
 pub fn from_freedesktop() -> Vec<Entry> {
+    let icons = load_icons();
+
     freedesktop_entries()
         .into_iter()
-        .map(|(_, entry)| entry)
+        .map(|(_, mut entry)| {
+            // Replace icon names with an actual existing file path
+            entry.icon = entry.icon.and_then(|icon| icons.get(&icon).cloned());
+            entry
+        })
         .collect()
 }
