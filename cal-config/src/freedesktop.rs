@@ -14,14 +14,16 @@ use crate::Entry;
 
 /// Get freedesktop entries (filtering out no display ones)
 pub fn freedesktop_entries() -> HashMap<String, Entry> {
-    // Get the system locale for translations.
+    // Get system locale for translations
     let locale = get_locale();
+    let de = env::var("XDG_CURRENT_DESKTOP").ok();
+
     let code: Option<String> = locale
         .map(|l| l.split('-').next().map(|l| l.to_string()))
         .flatten();
 
     let mut entries: HashMap<String, Entry> = HashMap::new();
-    let parser = FreedesktopParser::new(code);
+    let parser = FreedesktopParser::new(code, de);
 
     let xdg_data_dirs = env::var("XDG_DATA_DIRS");
     match xdg_data_dirs {
@@ -71,23 +73,25 @@ struct FreedesktopParser {
     locale_name_key: Option<String>,
     /// Precomputed key for the locale comment
     locale_comment_key: Option<String>,
+    /// Desktop environment (to be checked against "NotShowIn")
+    desktop_environment: Option<String>,
 }
 
 impl FreedesktopParser {
-    pub fn new(locale_code: Option<String>) -> Self {
+    pub fn new(locale_code: Option<String>, desktop_environment: Option<String>) -> Self {
         let locale_name_key = locale_code.as_ref().map(|code| format!("Name[{code}]"));
         let locale_comment_key = locale_code.as_ref().map(|code| format!("Comment[{code}]"));
         Self {
             locale_name_key,
             locale_comment_key,
+            desktop_environment,
         }
     }
 
     /// Parse a Freedesktop file and add the entries to the list
     pub fn parse(&self, path: &Path, entries: &mut HashMap<String, Entry>) -> io::Result<()> {
         let mut entry = Entry::default();
-        let mut found = false;
-        let mut valid = true;
+        let mut valid = false;
 
         let file = std::fs::File::open(path)?;
         let reader = io::BufReader::new(file);
@@ -104,14 +108,18 @@ impl FreedesktopParser {
             // Start a new entry if the header is found
             if line == "[Desktop Entry]" {
                 let e = entry;
-                valid = true;
                 entry = Entry::default(); // Reset for the new entry
-                if found {
+                if valid {
                     entries.insert(e.name.clone(), e);
                 }
-                found = true;
+                valid = true;
                 continue;
             } else if line.starts_with("[") {
+                let e = entry;
+                entry = Entry::default(); // Reset for the new entry
+                if valid {
+                    entries.insert(e.name.clone(), e);
+                }
                 // This is not a desktop entry, but an action, etc
                 valid = false;
             }
@@ -172,14 +180,29 @@ impl FreedesktopParser {
                 "Icon" => entry.icon = Some(value.to_string()),
                 "NoDisplay" => {
                     if value == "true" {
-                        found = false;
+                        valid = false;
+                    }
+                }
+                "NotShowIn" => {
+                    if let Some(de) = self.desktop_environment.as_ref() {
+                        if value.to_lowercase().contains(&de.to_lowercase()) {
+                            valid = false;
+                        }
+                    }
+                }
+                "OnlyShowIn" => {
+                    if let Some(de) = self.desktop_environment.as_ref() {
+                        if !value.to_lowercase().contains(&de.to_lowercase()) {
+                            valid = false;
+                        }
                     }
                 }
                 _ => {}
             }
         }
 
-        if found {
+        // Add the last entry
+        if valid {
             entries.insert(entry.name.clone(), entry);
         }
 
