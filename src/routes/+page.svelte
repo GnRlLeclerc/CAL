@@ -7,6 +7,10 @@
 
   let filter = $state("");
   let keywords = $derived(normalize(filter).split(" "));
+  let directioncls = $derived(
+    appState.config?.mode === "icon" ? "row" : "column",
+  );
+  let max = $derived(directioncls === "row" ? 5 : 15);
 </script>
 
 <main>
@@ -17,11 +21,11 @@
 
   <div class="separator"></div>
 
-  <div class="scroll">
+  <div class={["scroll", directioncls]}>
     {#if appState.config !== null}
       {#each appState.config.entries
         .filter((entry) => filterEntry(entry, keywords))
-        .slice(0, 15) as entry (entry.name)}
+        .slice(0, max) as entry (entry.name)}
         <Entry {entry}></Entry>
       {/each}
     {/if}

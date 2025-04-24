@@ -16,7 +16,7 @@
 </script>
 
 {#if src === null}
-  <div class="default-icon"></div>
+  <div class={["default-icon", classes]}></div>
 {:else}
   <img
     {src}

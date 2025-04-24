@@ -18,6 +18,8 @@
         return "icon-compact";
       case "full":
         return "icon-full";
+      case "icon":
+        return "icon-large";
       default:
         return "icon";
     }
@@ -29,6 +31,8 @@
         return "radius-compact";
       case "full":
         return "radius-full";
+      case "lines":
+        return "radius-lines";
       default:
         return "radius-compact";
     }
@@ -42,6 +46,8 @@
         return "height-full";
       case "lines":
         return "height-lines";
+      case "icon":
+        return undefined;
       default:
         return "height-compact";
     }
