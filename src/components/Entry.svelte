@@ -1,15 +1,16 @@
 <!-- CAL Menu Entry-->
 <script lang="ts">
   import type { Entry } from "$lib/config";
-  import { invoke } from "@tauri-apps/api/core";
+  import { runCommand } from "$lib/command";
   import Image from "./Image.svelte";
   import { appState } from "$lib/config.svelte";
 
   interface Props {
     entry: Entry;
+    selected: boolean;
   }
 
-  const { entry }: Props = $props();
+  const { entry, selected }: Props = $props();
   const mode = $derived(appState.config?.mode);
 
   const iconcls = $derived.by(() => {
@@ -54,14 +55,13 @@
   });
 
   const onclick = () => {
-    invoke("run_command", {
-      command: entry.command,
-      terminal: entry.terminal,
-    });
+    runCommand(entry);
   };
+
+  const selectedcls = $derived(selected ? "selected" : "");
 </script>
 
-<button class={["entry-row", radiuscls, heightcls]} {onclick}>
+<button class={["entry-row", radiuscls, heightcls, selectedcls]} {onclick}>
   {#if mode !== "lines"}
     <Image classes={iconcls} path={entry.icon}></Image>
   {/if}
