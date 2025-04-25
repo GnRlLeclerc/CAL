@@ -2,7 +2,7 @@
 
 import { Channel, invoke } from "@tauri-apps/api/core";
 import { type Config } from "./config";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 import { appState } from "./config.svelte";
 import removeAccents from "remove-accents";
 

@@ -92,6 +92,7 @@
         ) {
           runCommand(entries[0]);
         }
+        handleClose();
         break;
       case "Escape":
         event.preventDefault();

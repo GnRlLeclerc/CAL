@@ -2,31 +2,25 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Entry, entries::from_freedesktop};
+use crate::{Entry, colors::Colors};
 
 /// The CAL config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
+    /// Daemon mode (does not display anything, runs a daemon)
+    #[serde(default)]
+    pub daemon: bool,
+
+    /// Icon theme name
+    pub icon_theme: Option<String>,
+
     /// The config entries
+    #[serde(default)]
     pub entries: Vec<Entry>,
-}
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            entries: from_freedesktop(),
-        }
-    }
-}
-
-impl Config {
-    /// Merge another config into this one, taking precedence over existing fields
-    pub fn merge(&mut self, other: Config) {
-        // Override entries if not empty
-        if !other.entries.is_empty() {
-            self.entries = other.entries;
-        }
-    }
+    /// Colors (can be optionally provided through the config)
+    #[serde(default)]
+    pub colors: Colors,
 }
 
 /// Parse a CAL config + entries from TOML

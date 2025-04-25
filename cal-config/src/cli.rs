@@ -15,28 +15,48 @@ struct Args {
     /// Path to another config file
     #[arg(short, long)]
     config: Option<PathBuf>,
+
+    /// Icon theme name
+    #[arg(short, long)]
+    icon_theme: Option<String>,
+
+    /// Launch the daemon
+    #[clap(short, long)]
+    daemon: bool,
 }
 
 /// Generate the config from CLI args and config files
 pub fn process_cli_config() -> Config {
-    let mut config = Config::default();
     let args = Args::parse();
 
-    if let Some(project_dirs) = directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal") {
-        let cfg_dir = project_dirs.config_dir();
+    // In order of priority
+    // 1. Parse the config from the path specified in CLI args
+    // 2. Parse the config from any of the valid configuration files
+    // 3. Use the default config
+    let mut config = args
+        .config
+        // 1. CLI config path
+        .map(|cfg_path| read_config_from_path(&cfg_path))
+        // 2. Config from default paths
+        .or_else(|| {
+            directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal").and_then(
+                |project_dirs| {
+                    let cfg_dir = project_dirs.config_dir();
 
-        vec!["config.toml", "config.json"]
-            .iter()
-            .map(|f| cfg_dir.join(f))
-            .filter(|p| p.exists())
-            .for_each(|p| {
-                config.merge(read_config_from_path(&p));
-            });
-    }
+                    vec![cfg_dir.join("config.toml"), cfg_dir.join("config.json")]
+                        .iter()
+                        .filter(|p| p.exists())
+                        .next()
+                        .map(|p| read_config_from_path(&p))
+                },
+            )
+        })
+        // 3. Use the default config
+        .unwrap_or_else(|| from_toml("").unwrap());
 
-    if let Some(cfg_path) = args.config {
-        config.merge(read_config_from_path(&cfg_path));
-    }
+    // Override the config with CLI args
+    config.icon_theme = args.icon_theme.or(config.icon_theme);
+    config.daemon = args.daemon && config.daemon;
 
     config
 }

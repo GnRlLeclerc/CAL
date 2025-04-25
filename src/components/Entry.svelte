@@ -4,6 +4,7 @@
   import { runCommand } from "$lib/command";
   import Image from "./Image.svelte";
   import { appState } from "$lib/config.svelte";
+  import { handleClose } from "$lib/close";
 
   interface Props {
     entry: Entry;
@@ -56,6 +57,7 @@
 
   const onclick = () => {
     runCommand(entry);
+    handleClose();
   };
 
   const selectedcls = $derived(selected ? "selected" : "");
