@@ -39,7 +39,11 @@
 <main>
   <div class="input-row">
     <SearchIcon />
-    <input type="text" placeholder="Search for apps..." bind:value={filter} />
+    <input
+      type="text"
+      placeholder={appState.config?.placeholder}
+      bind:value={filter}
+    />
   </div>
 
   <div class="separator"></div>
