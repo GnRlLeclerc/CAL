@@ -2,7 +2,7 @@
 
 use crate::{
     Config,
-    config::{from_json, from_toml},
+    config::{DisplayMode, from_json, from_toml},
 };
 use clap::Parser;
 use std::path::PathBuf;
@@ -16,13 +16,21 @@ struct Args {
     #[arg(short, long)]
     config: Option<PathBuf>,
 
+    /// Launch the daemon
+    #[clap(short, long)]
+    daemon: bool,
+
     /// Icon theme name
     #[arg(short, long)]
     icon_theme: Option<String>,
 
-    /// Launch the daemon
+    /// Search text placeholder
     #[clap(short, long)]
-    daemon: bool,
+    placeholder: Option<String>,
+
+    /// Menu display mode
+    #[clap(short, long)]
+    mode: Option<DisplayMode>,
 }
 
 /// Generate the config from CLI args and config files
@@ -56,7 +64,9 @@ pub fn process_cli_config() -> Config {
 
     // Override the config with CLI args
     config.icon_theme = args.icon_theme.or(config.icon_theme);
-    config.daemon = args.daemon && config.daemon;
+    config.daemon = args.daemon;
+    config.placeholder = args.placeholder.or(config.placeholder);
+    config.mode = args.mode.unwrap_or(config.mode);
 
     config
 }

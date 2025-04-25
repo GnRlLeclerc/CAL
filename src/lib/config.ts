@@ -26,6 +26,8 @@ export interface Colors {
 /** The launcher configuration for a given screen */
 export interface Config {
   entries: Entry[];
+  daemon: boolean;
+  placeholder: string | null;
 
   /** Styling */
   mode: "full" | "icon" | "lines" | "compact";

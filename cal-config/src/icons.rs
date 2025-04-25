@@ -10,7 +10,7 @@ use std::{
 use walkdir::WalkDir;
 
 /// Index desktop icons paths by name
-pub fn load_icons(theme: Option<String>) -> HashMap<String, String> {
+pub fn load_icons(theme: &Option<String>) -> HashMap<String, String> {
     // NOTE: icon paths contain their resolution in their values.
     // SVGs have the maximum resolution possible.
     // The tuples represent (resolution, is_fallback, path)

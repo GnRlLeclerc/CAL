@@ -13,7 +13,6 @@
   --padding: 10px;
   --animation-duration: 0.3s;
   --animation-easing: ease-in-out;
-  --border-radius: 25px;
 
   /** Icon sizes for the different modes */
   --compact-size: 28px;
@@ -195,8 +194,9 @@ p {
 
 /** Placeholder for missing icons */
 .default-icon {
-  background-color: red; /** TODO */
-  border-radius: var(--border-radius);
+  background-color: var(--text-dim-color);
+  margin: var(--padding);
+  border-radius: 30%;
 }
 
 /** The Entry title */

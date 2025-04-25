@@ -4,6 +4,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::{Entry, colors::Colors};
 
+#[derive(Debug, Clone, Serialize, Deserialize, clap::ValueEnum)]
+pub enum DisplayMode {
+    /// Icon, title and description
+    Full,
+    /// Icon only
+    Icon,
+    /// Title only
+    Lines,
+    /// Icon and title
+    Compact,
+}
+
 /// The CAL config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -14,6 +26,13 @@ pub struct Config {
     /// Icon theme name
     pub icon_theme: Option<String>,
 
+    /// Search text placeholder
+    pub placeholder: Option<String>,
+
+    /// Menu display mode
+    #[serde(default = "default_display_mode")]
+    pub mode: DisplayMode,
+
     /// The config entries
     #[serde(default)]
     pub entries: Vec<Entry>,
@@ -21,6 +40,10 @@ pub struct Config {
     /// Colors (can be optionally provided through the config)
     #[serde(default)]
     pub colors: Colors,
+}
+
+fn default_display_mode() -> DisplayMode {
+    DisplayMode::Full
 }
 
 /// Parse a CAL config + entries from TOML
