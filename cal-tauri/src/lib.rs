@@ -1,6 +1,6 @@
-use std::env;
+use std::{env, process::Stdio};
 
-use cal_config::Config;
+use cal_config::{colors::Colors, Config};
 use tauri::{ipc::Channel, State};
 
 /// Load the App Launcher entries via a channel
@@ -15,7 +15,7 @@ fn run_command(command: String, terminal: bool) {
     let mut command = command
         .split_whitespace()
         .filter(|&arg| match arg {
-            "%U" | "%u" | "%F" | "%f" => false,
+            "%U" | "%u" | "%F" | "%f" | "@@" | "@@u" => false,
             _ => true,
         })
         .map(|arg| arg.to_string())

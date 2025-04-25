@@ -2,6 +2,7 @@
   import { runCommand } from "$lib/command";
   import { appState } from "$lib/config.svelte";
   import { normalize, filterEntry } from "$lib/utils";
+  import { handleClose } from "$lib/close";
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import "../app.css";
   import Entry from "../components/Entry.svelte";
@@ -94,7 +95,7 @@
         break;
       case "Escape":
         event.preventDefault();
-        getCurrentWindow().hide();
+        handleClose();
         break;
 
       default:

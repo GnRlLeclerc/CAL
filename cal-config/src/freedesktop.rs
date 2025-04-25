@@ -130,16 +130,16 @@ impl FreedesktopParser {
 
             let mut values = line.split('=');
             let key = values.next();
-            let value = values.next();
+            let value = values.collect::<Vec<&str>>().join("=");
 
             let key = match key {
                 Some(key) => key,
                 None => continue,
             };
 
-            let value = match value {
-                Some(value) => value,
-                None => continue,
+            let value = match value.is_empty() {
+                false => value,
+                true => continue,
             };
 
             // Compare locale key
