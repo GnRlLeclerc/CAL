@@ -68,3 +68,13 @@ impl Default for Colors {
         }
     }
 }
+
+/// Parse colors from TOML
+pub fn from_toml<'a>(config: &'a str) -> Result<Colors, toml::de::Error> {
+    toml::from_str(config)
+}
+
+/// Parse colors from JSON
+pub fn from_json(config: &str) -> serde_json::Result<Colors> {
+    serde_json::from_str(config)
+}

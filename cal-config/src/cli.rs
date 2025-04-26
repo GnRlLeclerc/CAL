@@ -2,6 +2,7 @@
 
 use crate::{
     Config,
+    colors::{self, Colors},
     config::{DisplayMode, from_json, from_toml},
 };
 use clap::Parser;
@@ -36,6 +37,8 @@ struct Args {
 /// Generate the config from CLI args and config files
 pub fn process_cli_config() -> Config {
     let args = Args::parse();
+    let project_dirs = directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal");
+    let cfg_dir = project_dirs.as_ref().map(|d| d.config_dir());
 
     // In order of priority
     // 1. Parse the config from the path specified in CLI args
@@ -47,26 +50,32 @@ pub fn process_cli_config() -> Config {
         .map(|cfg_path| read_config_from_path(&cfg_path))
         // 2. Config from default paths
         .or_else(|| {
-            directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal").and_then(
-                |project_dirs| {
-                    let cfg_dir = project_dirs.config_dir();
-
-                    vec![cfg_dir.join("config.toml"), cfg_dir.join("config.json")]
-                        .iter()
-                        .filter(|p| p.exists())
-                        .next()
-                        .map(|p| read_config_from_path(&p))
-                },
-            )
+            cfg_dir.and_then(|cfg_dir| {
+                vec![cfg_dir.join("config.toml"), cfg_dir.join("config.json")]
+                    .iter()
+                    .filter(|p| p.exists())
+                    .next()
+                    .map(|p| read_config_from_path(&p))
+            })
         })
         // 3. Use the default config
         .unwrap_or_else(|| from_toml("").unwrap());
+
+    // Parse the colors from colors.toml or colors.json, overriding the base config if found
+    let colors = cfg_dir.and_then(|cfg_dir| {
+        vec![cfg_dir.join("colors.toml"), cfg_dir.join("colors.json")]
+            .iter()
+            .filter(|p| p.exists())
+            .next()
+            .map(|p| read_colors_from_path(&p))
+    });
 
     // Override the config with CLI args
     config.icon_theme = args.icon_theme.or(config.icon_theme);
     config.daemon = args.daemon;
     config.placeholder = args.placeholder.or(config.placeholder);
     config.mode = args.mode.unwrap_or(config.mode);
+    config.colors = colors.unwrap_or(config.colors);
 
     config
 }
@@ -98,6 +107,33 @@ where
         "toml" => from_toml(&read_from_path(path)).unwrap(),
         "json" => from_json(&read_from_path(path)).unwrap(),
         "yaml" | "yml" => panic!("YAML config files are not supported yet"),
+        _ => {
+            panic!(
+                "Unsupported config file extension {} for file {}",
+                ext,
+                path.as_ref().display()
+            );
+        }
+    }
+}
+
+fn read_colors_from_path<P>(path: P) -> Colors
+where
+    P: AsRef<Path>,
+{
+    let ext = path
+        .as_ref()
+        .extension()
+        .expect(&format!(
+            "Config file {} must have an extension",
+            path.as_ref().display(),
+        ))
+        .to_str()
+        .expect("Config file extension must be a string");
+
+    match ext {
+        "toml" => colors::from_toml(&read_from_path(path)).unwrap(),
+        "json" => colors::from_json(&read_from_path(path)).unwrap(),
         _ => {
             panic!(
                 "Unsupported config file extension {} for file {}",
