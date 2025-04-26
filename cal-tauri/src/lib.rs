@@ -1,9 +1,43 @@
-use std::{env, process::Stdio};
+use std::{
+    env,
+    fs::{self, read_to_string},
+    process::Stdio,
+};
 
-use cal_config::{Config, Entry};
+use cal_config::{cli::directories, Config, Entry};
 use cal_daemon::read_message_async;
+use serde_json::{Map, Value};
 use tauri::{ipc::Channel, Manager, RunEvent, State, WindowEvent};
 use tokio::{net::UnixListener, sync::Mutex};
+
+/// Path to the counts file
+const COUNTS: &str = "counts.json";
+
+/// Get the app launcher per-app run counts (used to sort the results)
+/// If any error occurs during
+#[tauri::command]
+fn get_counts() -> Map<String, Value> {
+    directories()
+        .and_then(|dirs| read_to_string(&dirs.data_dir().join(COUNTS)).ok())
+        .and_then(|content| serde_json::from_str::<Value>(&content).ok())
+        .and_then(|value| match value {
+            Value::Object(obj) => Some(obj),
+            _ => None,
+        })
+        .unwrap_or_else(|| Map::new())
+}
+
+/// Update the per-app run counts (the previous file is overwritten)
+#[tauri::command]
+fn update_counts(counts: Map<String, Value>) {
+    if let Ok(content) = serde_json::to_string(&counts) {
+        let _ = directories().and_then(|dirs| {
+            let data_dir = &dirs.data_dir();
+            fs::create_dir_all(data_dir).unwrap();
+            fs::write(&data_dir.join(COUNTS), content).ok()
+        });
+    }
+}
 
 pub enum AppState {
     /// One run only: contains the full config to send to the frontend
@@ -93,7 +127,12 @@ pub fn run(state: AppState, daemon: bool) {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(Mutex::new(state))
-        .invoke_handler(tauri::generate_handler![subscribe_config, run_command])
+        .invoke_handler(tauri::generate_handler![
+            subscribe_config,
+            run_command,
+            get_counts,
+            update_counts
+        ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(move |a, event| {

@@ -34,10 +34,14 @@ struct Args {
     mode: Option<DisplayMode>,
 }
 
+pub fn directories() -> Option<directories_next::ProjectDirs> {
+    directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal")
+}
+
 /// Generate the config from CLI args and config files
 pub fn process_cli_config() -> Config {
     let args = Args::parse();
-    let project_dirs = directories_next::ProjectDirs::from("com", "GnRlLeclerc", "cal");
+    let project_dirs = directories();
     let cfg_dir = project_dirs.as_ref().map(|d| d.config_dir());
 
     // In order of priority

@@ -5,12 +5,18 @@ import { updateColors, type Config } from "./config";
 import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 import { appState } from "./config.svelte";
 import removeAccents from "remove-accents";
+import { getCounts } from "./counts";
 
 /** Subscribe to the configuration channel */
 export const subscribeConfig = async () => {
   const channel = new Channel<Config>();
 
   channel.onmessage = (config) => {
+    // Load the counts in the background
+    getCounts().then((counts) => {
+      appState.counts = counts;
+    });
+
     // Compute the keywords
     for (const entry of config.entries) {
       entry.allKeywords = removeAccents(entry.name.toLowerCase()).split(" ");

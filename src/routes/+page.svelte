@@ -6,6 +6,7 @@
   import "../app.css";
   import Entry from "../components/Entry.svelte";
   import SearchIcon from "../components/SearchIcon.svelte";
+  import { incrementCount, sortEntries, updateCounts } from "$lib/counts";
 
   let filter = $state("");
   let keywords = $derived(normalize(filter).split(" "));
@@ -49,7 +50,7 @@
 
   <div class={["scroll", directioncls]}>
     {#if entries !== undefined}
-      {#each entries.slice(0, max) as entry, i (entry.name)}
+      {#each sortEntries(entries).slice(0, max) as entry, i (entry.name)}
         <Entry {entry} selected={i === selected}></Entry>
       {/each}
     {/if}
@@ -86,12 +87,14 @@
           entries !== undefined &&
           selected < entries.length
         ) {
+          incrementCount(entries[selected]);
           runCommand(entries[selected]);
         } else if (
           selected === null &&
           entries !== undefined &&
           entries.length > 0
         ) {
+          incrementCount(entries[0]);
           runCommand(entries[0]);
         }
         filter = "";

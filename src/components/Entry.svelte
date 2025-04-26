@@ -5,6 +5,7 @@
   import Image from "./Image.svelte";
   import { appState } from "$lib/config.svelte";
   import { handleClose } from "$lib/close";
+  import { incrementCount } from "$lib/counts";
 
   interface Props {
     entry: Entry;
@@ -56,6 +57,7 @@
   });
 
   const onclick = () => {
+    incrementCount(entry);
     runCommand(entry);
     handleClose();
   };
