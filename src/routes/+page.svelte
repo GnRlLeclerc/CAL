@@ -59,7 +59,6 @@
 
 <svelte:window
   on:keydown={(event) => {
-    console.log(event.key);
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();

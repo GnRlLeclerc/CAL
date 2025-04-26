@@ -15,6 +15,7 @@ pub fn load_icons(theme: &Option<String>) -> HashMap<String, String> {
     // SVGs have the maximum resolution possible.
     // The tuples represent (resolution, is_fallback, path)
     let mut icon_paths: HashMap<String, (usize, bool, String)> = HashMap::new();
+    let icon_dirs = &["icons/hicolor", "pixmaps"];
 
     let xdg_data_dirs = env::var("XDG_DATA_DIRS");
     match xdg_data_dirs {
@@ -27,9 +28,10 @@ pub fn load_icons(theme: &Option<String>) -> HashMap<String, String> {
                     process_icons_dir(&base_path, false, &mut icon_paths);
                 }
 
-                let mut path = PathBuf::from(dir);
-                path.push("icons/hicolor");
-                process_icons_dir(&path, true, &mut icon_paths);
+                let path = PathBuf::from(dir);
+                icon_dirs.iter().for_each(|icon_dir| {
+                    process_icons_dir(&path.join(icon_dir), true, &mut icon_paths);
+                });
             }
         }
         Err(_) => {
@@ -41,8 +43,10 @@ pub fn load_icons(theme: &Option<String>) -> HashMap<String, String> {
                 process_icons_dir(&base_path, false, &mut icon_paths);
             }
 
-            let base_path = Path::new("/usr/share/icons/hicolor");
-            process_icons_dir(&base_path, true, &mut icon_paths);
+            let base_path = PathBuf::from("/usr/share");
+            icon_dirs.iter().for_each(|icon_dir| {
+                process_icons_dir(&base_path.join(icon_dir), true, &mut icon_paths);
+            });
         }
     }
 
@@ -55,6 +59,11 @@ fn process_icons_dir(
     mut icon_paths: &mut HashMap<String, (usize, bool, String)>,
 ) {
     if path.exists() {
+        if path.iter().last() == Some(OsStr::new("pixmaps")) {
+            insert_icons_with_weight(path, 0, is_fallback, icon_paths);
+            return;
+        }
+
         match path.read_dir() {
             Ok(entries) => entries
                 .into_iter()
