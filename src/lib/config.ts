@@ -25,10 +25,21 @@ export interface Colors {
 
 /** The launcher configuration for a given screen */
 export interface Config {
-  entries: Entry[];
   daemon: boolean;
   placeholder: string | null;
-
-  /** Styling */
   mode: "full" | "icon" | "lines" | "compact";
+  entries: Entry[];
+  colors: Colors;
 }
+
+/** Update the root color css variables from the new colors */
+export const updateColors = (colors: Colors) => {
+  const root = document.documentElement;
+
+  root.style.setProperty("--bg-color", colors.background);
+  root.style.setProperty("--bg-hover-color", colors.hover);
+  root.style.setProperty("--bg-selected-color", colors.selected);
+  root.style.setProperty("--text-color", colors.text);
+  root.style.setProperty("--text-selected-color", colors.textSelected);
+  root.style.setProperty("--text-dim-color", colors.textDim);
+};

@@ -1,7 +1,7 @@
 /** Load the launcher configuration from a channel */
 
 import { Channel, invoke } from "@tauri-apps/api/core";
-import { type Config } from "./config";
+import { updateColors, type Config } from "./config";
 import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 import { appState } from "./config.svelte";
 import removeAccents from "remove-accents";
@@ -28,6 +28,9 @@ export const subscribeConfig = async () => {
 
     // Update the config
     appState.config = config;
+
+    // Update the colors
+    updateColors(config.colors);
 
     // Show the window
     getCurrentWindow().show();

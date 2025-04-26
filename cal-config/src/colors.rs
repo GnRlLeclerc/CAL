@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// Color scheme of the application
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Colors {
     /// Background color
     #[serde(default = "default_background")]
