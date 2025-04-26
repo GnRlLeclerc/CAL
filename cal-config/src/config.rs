@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{Entry, colors::Colors};
 
 #[derive(Debug, Clone, Serialize, Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "lowercase")]
 pub enum DisplayMode {
     /// Icon, title and description
     Full,
