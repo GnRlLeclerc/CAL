@@ -204,7 +204,7 @@ p {
 /** The Entry description */
 .description {
   color: var(--text-dim-color);
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 /** Flex scroll area without scrollbar */

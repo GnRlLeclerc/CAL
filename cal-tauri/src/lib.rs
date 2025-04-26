@@ -1,27 +1,42 @@
 use std::{env, process::Stdio};
 
 use cal_config::{Config, Entry};
-use tauri::{ipc::Channel, State};
+use cal_daemon::read_message_async;
+use tauri::{ipc::Channel, Manager, RunEvent, State, WindowEvent};
+use tokio::{net::UnixListener, sync::Mutex};
 
 pub enum AppState {
     /// One run only: contains the full config to send to the frontend
     Once(Config),
     /// Daemon mode: contains the cached desktop entries for default usage of the launcher
-    Daemon(Vec<Entry>),
+    Daemon(UnixListener, Vec<Entry>),
 }
 
 /// Load the App Launcher entries via a channel
 /// The frontend should connect to the rust backend only once, using this endpoint.
 #[tauri::command]
-fn subscribe_config(state: State<'_, AppState>, channel: Channel<&Config>) {
-    match state.inner() {
+async fn subscribe_config(
+    state: State<'_, Mutex<AppState>>,
+    channel: Channel<&Config>,
+) -> Result<(), ()> {
+    match &*state.lock().await {
         AppState::Once(config) => channel.send(config).unwrap(),
-        AppState::Daemon(entries) => {
-            // TODO: keep the channel open, and send stuff when a new config is received.
-            // Also send the entries when the ones in the received config are empty
-            todo!("Daemon mode not implemented yet");
+        AppState::Daemon(listener, entries) => {
+            println!("Daemon mode: listening for commands...");
+            while let Ok((mut stream, _)) = listener.accept().await {
+                let config: Option<Config> = read_message_async(&mut stream).await.ok();
+                if let Some(mut config) = config {
+                    if config.entries.is_empty() {
+                        config.entries = entries.clone();
+                    }
+                    config.daemon = true; // Signal to the frontend that it must remain open
+
+                    channel.send(&config).unwrap();
+                }
+            }
         }
     }
+    Ok(())
 }
 
 /// Run a command
@@ -74,11 +89,33 @@ fn get_default_terminal() -> Vec<String> {
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run(state: AppState) {
+pub fn run(state: AppState, daemon: bool) {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .manage(state)
-        .invoke_handler(tauri::generate_handler![subscribe_config, run_command,])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .manage(Mutex::new(state))
+        .invoke_handler(tauri::generate_handler![subscribe_config, run_command])
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(move |a, event| {
+            // In daemon mode, cleanup the socket before exit,
+            // and always hide the webview window instead of closing it.
+            match (daemon, event) {
+                (true, RunEvent::ExitRequested { .. }) => {
+                    // Remove the socket
+                    let _ = std::fs::remove_file(cal_daemon::SOCKET);
+                }
+                (
+                    true,
+                    RunEvent::WindowEvent {
+                        label,
+                        event: WindowEvent::CloseRequested { api, .. },
+                        ..
+                    },
+                ) => {
+                    api.prevent_close();
+                    a.get_webview_window(&label).unwrap().hide().unwrap();
+                }
+                _ => {}
+            }
+        });
 }

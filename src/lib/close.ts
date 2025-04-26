@@ -1,8 +1,12 @@
 /** Closing window logic */
 
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { appState } from "./config.svelte";
 
 export const handleClose = () => {
-  // TODO: get daemon status from state, and really close the window if not daemonized
-  getCurrentWindow().hide();
+  if (appState.config?.daemon) {
+    getCurrentWindow().hide();
+  } else {
+    getCurrentWindow().close();
+  }
 };

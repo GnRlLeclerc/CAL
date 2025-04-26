@@ -72,7 +72,7 @@
     <div class={["entry-content", heightcls]}>
       <p class="name">{entry.name}</p>
 
-      {#if mode !== "compact" && mode !== "lines"}
+      {#if mode !== "compact" && mode !== "lines" && entry.description}
         <p class="description">{entry.description}</p>
       {/if}
     </div>

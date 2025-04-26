@@ -3,7 +3,6 @@
   import { appState } from "$lib/config.svelte";
   import { normalize, filterEntry } from "$lib/utils";
   import { handleClose } from "$lib/close";
-  import { getCurrentWindow } from "@tauri-apps/api/window";
   import "../app.css";
   import Entry from "../components/Entry.svelte";
   import SearchIcon from "../components/SearchIcon.svelte";
@@ -95,10 +94,12 @@
         ) {
           runCommand(entries[0]);
         }
+        filter = "";
         handleClose();
         break;
       case "Escape":
         event.preventDefault();
+        filter = "";
         handleClose();
         break;
 

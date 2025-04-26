@@ -22,3 +22,5 @@ tauri-plugin-opener = "2"
 serde = { workspace = true }
 serde_json = { workspace = true }
 cal-config = { version = "0.1.0", path = "../cal-config" }
+cal-daemon = { version = "0.1.0", path = "../cal-daemon" }
+tokio = { workspace = true }
