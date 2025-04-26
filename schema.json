@@ -96,15 +96,15 @@
           "format": "color",
           "default": "#abb2bf"
         },
-        "text_selected": {
-          "type": "string",
-          "format": "color",
-          "default": "#ffffff"
-        },
         "text_dim": {
           "type": "string",
           "format": "color",
           "default": "#5c6370"
+        },
+        "accent": {
+          "type": "string",
+          "format": "color",
+          "default": "#61afef"
         }
       }
     }

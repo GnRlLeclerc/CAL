@@ -22,13 +22,13 @@ pub struct Colors {
     #[serde(default = "default_text")]
     pub text: String,
 
-    /// Text color when selected
-    #[serde(default = "default_text_selected")]
-    pub text_selected: String,
-
     /// Dim text color (for description)
     #[serde(default = "default_text_dim")]
     pub text_dim: String,
+
+    /// Accent color (for icons)
+    #[serde(default = "default_accent")]
+    pub accent: String,
 }
 
 // Default color theme (Atom One Dark)
@@ -49,12 +49,12 @@ fn default_text() -> String {
     "#abb2bf".into()
 }
 
-fn default_text_selected() -> String {
-    "#ffffff".into()
-}
-
 fn default_text_dim() -> String {
     "#5c6370".into()
+}
+
+fn default_accent() -> String {
+    "#61afef".into()
 }
 
 impl Default for Colors {
@@ -64,8 +64,8 @@ impl Default for Colors {
             hover: default_hover(),
             selected: default_selected(),
             text: default_text(),
-            text_selected: default_text_selected(),
             text_dim: default_text_dim(),
+            accent: default_accent(),
         }
     }
 }
