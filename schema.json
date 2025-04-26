@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Config",
+  "type": "object",
+  "properties": {
+    "daemon": {
+      "type": "boolean",
+      "description": "Daemon mode (does not display anything, runs a daemon)",
+      "default": false
+    },
+    "icon_theme": {
+      "type": ["string", "null"],
+      "description": "Icon theme name"
+    },
+    "placeholder": {
+      "type": ["string", "null"],
+      "description": "Search text placeholder"
+    },
+    "mode": {
+      "type": "string",
+      "description": "Menu display mode",
+      "enum": ["full", "icon", "lines", "compact"],
+      "default": "full"
+    },
+    "entries": {
+      "type": "array",
+      "description": "The config entries",
+      "items": {
+        "$ref": "#/definitions/Entry"
+      },
+      "default": []
+    },
+    "colors": {
+      "$ref": "#/definitions/Colors",
+      "description": "Colors scheme",
+      "default": {}
+    }
+  },
+  "required": [],
+  "definitions": {
+    "Entry": {
+      "type": "object",
+      "description": "Menu entry",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Entry name"
+        },
+        "icon": {
+          "type": ["string", "null"],
+          "description": "Icon path"
+        },
+        "command": {
+          "type": ["string"],
+          "description": "Command to run"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Description of the entry"
+        },
+        "terminal": {
+          "type": "boolean",
+          "description": "Whether the command must be run in a terminal",
+          "default": false
+        },
+        "keywords": {
+          "type": ["array", "null"],
+          "description": "Keywords for the entry",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Colors": {
+      "type": "object",
+      "description": "Color scheme",
+      "properties": {
+        "background": {
+          "type": "string",
+          "format": "color",
+          "default": "#282c34"
+        },
+        "hover": {
+          "type": "string",
+          "format": "color",
+          "default": "#3e4451"
+        },
+        "selected": {
+          "type": "string",
+          "format": "color",
+          "default": "#4b5263"
+        },
+        "text": {
+          "type": "string",
+          "format": "color",
+          "default": "#abb2bf"
+        },
+        "text_selected": {
+          "type": "string",
+          "format": "color",
+          "default": "#ffffff"
+        },
+        "text_dim": {
+          "type": "string",
+          "format": "color",
+          "default": "#5c6370"
+        }
+      }
+    }
+  }
+}
